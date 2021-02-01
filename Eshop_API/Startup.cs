@@ -13,6 +13,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Eshop_API.Models;
 using Microsoft.AspNet.OData.Extensions;
+using Eshop_API.Helpers;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Eshop_API.Services;
 
 namespace Eshop_API
 {
@@ -32,7 +37,7 @@ namespace Eshop_API
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(MyAllowSpecificOrigins, builder => builder.WithOrigins("http://localhost:4200")
+                options.AddPolicy(MyAllowSpecificOrigins, builder => builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
@@ -47,12 +52,40 @@ namespace Eshop_API
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            // configure DI for application services
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseAuthentication();
 
             if (env.IsDevelopment())
             {

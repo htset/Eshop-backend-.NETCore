@@ -11,10 +11,12 @@ namespace Eshop_API.Models
         }
 
         public DbSet<Item> Items { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Item>().ToTable("Items");
+            modelBuilder.Entity<User>().ToTable("Users");
         }
         /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

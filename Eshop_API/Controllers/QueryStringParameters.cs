@@ -7,14 +7,14 @@ namespace Eshop_API.Controllers
 {
     public class QueryStringParameters
     {
-        const int maxPageSize = 3;
+        const int maxPageSize = 50;
         public int PageNumber { get; set; } = 1;
 
-        private int _pageSize = 3;
+        private int _pageSize = 10;
         public int PageSize
         {
             get { return _pageSize;  }
-            set { _pageSize = (value > PageSize) ? maxPageSize : value; }
+            set { _pageSize = (value > maxPageSize) ? maxPageSize : value; }
         }
 
         public string Name { get; set; }

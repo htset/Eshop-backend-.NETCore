@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Eshop_API.Models;
 using Microsoft.AspNetCore.Cors;
 using Eshop_API.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ItemApi.Controllers
 {
+    [Authorize]
     [Route("api/items")]
     [EnableCors("_myAllowSpecificOrigins")]
     [ApiController]
@@ -19,15 +21,6 @@ namespace ItemApi.Controllers
         public ItemController(ItemContext context)
         {
             _context = context;
-/*
-            if (_context.Items.Count() == 0)
-            {
-                // Create a new ItemItem if collection is empty,
-                // which means you can't delete all ItemItems.
-                _context.Items.Add(new Item { Name = "Item1" });
-                _context.SaveChanges();
-            }
-*/
         }
 
         /*
@@ -55,6 +48,7 @@ namespace ItemApi.Controllers
         }
 */
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<ItemPayload>> GetItems([FromQuery] QueryStringParameters qsParameters)
         {
 
@@ -83,6 +77,7 @@ namespace ItemApi.Controllers
 
         // GET: api/Todo/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
             var Item = await _context.Items.FindAsync(id);
