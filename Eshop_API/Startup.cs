@@ -18,6 +18,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Eshop_API.Services;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace Eshop_API
 {
@@ -95,6 +97,22 @@ namespace Eshop_API
             {
                 app.UseHsts();
             }
+
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+                RequestPath = "/MyImages"
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+                RequestPath = "/MyImages"
+            });
+
             app.UseHttpsRedirection();
 
             app.UseMvc();

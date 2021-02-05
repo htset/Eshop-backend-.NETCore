@@ -53,8 +53,19 @@ namespace Eshop_API.Controllers
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] string value)
+        [AllowAnonymous]
+        public ActionResult<Item> Post([FromBody] User user)
         {
+            try
+            {
+                _userService.AddUser(user);
+                return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         // PUT: api/User/5

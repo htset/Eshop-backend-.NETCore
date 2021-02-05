@@ -15,14 +15,16 @@ namespace Eshop_API.Services
     {
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
+        void AddUser(User user);
     }
 
     public class UserService : IUserService
     {
         private readonly ItemContext _context;
 
-        /*
+        
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
+        /*
         private List<User> _users = new List<User>
         {
             new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test", Role = "admin" }
@@ -73,6 +75,16 @@ namespace Eshop_API.Services
                 x.Password = null;
                 return x;
             });
+        }
+
+        public void AddUser(User user)
+        {
+            if(_context.Users.Any(u => u.Username == user.Username))
+            {
+                throw new Exception("Username already exists");
+            }
+            _context.Users.Add(user);
+            _context.SaveChanges();
         }
     }
 }
