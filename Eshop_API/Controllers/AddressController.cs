@@ -38,8 +38,18 @@ namespace Eshop_API.Controllers
 
         // POST api/<AddressController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public Address Post([FromBody] Address value)
         {
+            if(value.Id == 0)
+            {
+                _context.Addresses.Add(value);
+            }
+            else
+            {
+                _context.Addresses.Update(value);
+            }
+            _context.SaveChanges();
+            return value;
         }
 
         // PUT api/<AddressController>/5
@@ -50,8 +60,12 @@ namespace Eshop_API.Controllers
 
         // DELETE api/<AddressController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public int Delete(int id)
         {
+            var addr = _context.Addresses.Find(id);
+            _context.Addresses.Remove(addr);
+            _context.SaveChanges();
+            return id;
         }
     }
 }
