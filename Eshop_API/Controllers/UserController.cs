@@ -38,7 +38,7 @@ namespace Eshop_API.Controllers
 
         // GET: api/User
         [HttpGet]
-        public IActionResult Get()
+        public ActionResult Get()
         {
             var users = _userService.GetAll();
             return Ok(users);
@@ -46,9 +46,10 @@ namespace Eshop_API.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public ActionResult<User> Get(int id)
         {
-            return "value";
+            var user = _userService.GetUser(id);
+            return Ok(user);
         }
 
         // POST: api/User

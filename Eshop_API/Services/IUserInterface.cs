@@ -15,6 +15,9 @@ namespace Eshop_API.Services
     {
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
+
+        User GetUser(int id);
+
         void AddUser(User user);
     }
 
@@ -77,6 +80,11 @@ namespace Eshop_API.Services
             });
         }
 
+        public User GetUser(int id)
+        {
+            //TODO: return users without passwords????
+            return _context.Users.Find(id);
+        }
         public void AddUser(User user)
         {
             if(_context.Users.Any(u => u.Username == user.Username))
