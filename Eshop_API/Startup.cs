@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Eshop_API.Services;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Eshop_API
 {
@@ -76,6 +77,13 @@ namespace Eshop_API
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+
+            //upload files config
+            services.Configure<FormOptions>(o => {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
             });
 
             // configure DI for application services
